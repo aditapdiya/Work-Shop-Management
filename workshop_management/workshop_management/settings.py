@@ -27,12 +27,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Fetching the email settings from .env
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'aditapdiya@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'erkkiqlubpaovncc'  # Use an App Password, not your main Gmail password
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # Fetch from .env
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # Fetch from .env
+  # Use an App Password, not your main Gmail password
 
 # Application definition
 
