@@ -1,0 +1,43 @@
+{% extends "main/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 style="color: #003366;">Manage Workshops</h2>
+    <a href="{% url 'add_workshop' %}" class="btn btn-primary mb-4">Add Workshop</a>
+
+    <div class="row">
+        {% for workshop in workshops %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ workshop.title }}</h5>
+                    <p class="card-text">
+                        <strong>Date:</strong> {{ workshop.date }}<br>
+                        <strong>Time:</strong> {{ workshop.time }}<br>
+                        <strong>Speaker:</strong> {{ workshop.speaker }}<br>
+                        <strong>Location:</strong> {{ workshop.location|title }}<br>
+                        {% if workshop.location == "online" %}
+                            <strong>Meeting Link:</strong> <a href="{{ workshop.meeting_link }}" target="_blank">{{ workshop.meeting_link }}</a><br>
+                        {% else %}
+                            <strong>Address:</strong> {{ workshop.address }}<br>
+                        {% endif %}
+                        <strong>Capacity:</strong> {{ workshop.capacity }}<br>
+                        <strong>Status:</strong> 
+                        {% if workshop.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'edit_workshop' workshop.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'delete_workshop' workshop.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No workshops available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

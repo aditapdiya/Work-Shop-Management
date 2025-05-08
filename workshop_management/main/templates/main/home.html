@@ -1,12 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Home - Workshop Management System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Workshop Management System | TechVistaCode</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #030f27;
+            --primary-blue: #00aaff;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(90deg, var(--primary-dark), #005f99);
+        }
+
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: var(--primary-blue) !important;
+        }
+
+        .hero {
+            background: linear-gradient(90deg, var(--primary-dark), #005f99);
+            color: white;
+        }
+
+        .btn-theme {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-theme:hover {
+            background-color: #008ecc;
+        }
+
+        footer {
+            background: linear-gradient(90deg, var(--primary-dark), #005f99);
+            color: white;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Workshop Management System</h1>
-    <p>This is the home page.</p>
 
-    <p><a href="{% url 'login' %}">Login</a></p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="https://techvistacode.com/images/tvc-logo.webp" alt="TechVistaCode Logo">
+                TechVistaCode
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero text-center py-5 mt-5">
+        <div class="container">
+            <h1 class="display-4">Welcome to TechVistaCode's Workshop Management System</h1>
+            <p class="lead">Effortlessly organize and manage your workshops.</p>
+            <a href="{% url 'login' %}" class="btn btn-theme btn-lg mt-3">Login</a>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="text-dark">Our Features</h2>
+            <p class="text-muted">Powerful tools to manage and track your workshops with ease.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Workshop Scheduling</h5>
+                        <p class="card-text">Set up workshop sessions with dates, topics, and trainers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Participant Management</h5>
+                        <p class="card-text">Track registered users and attendance automatically.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Reports & Insights</h5>
+                        <p class="card-text">Generate detailed reports on workshop performance and engagement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-3">
+        <p class="mb-0">&copy; 2025 TechVistaCode. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
