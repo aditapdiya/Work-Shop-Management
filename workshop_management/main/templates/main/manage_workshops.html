@@ -1,26 +1,34 @@
 {% extends "main/base.html" %}
 {% block content %}
 <div class="container mt-5">
-    <h2 style="color: #003366;">Manage Workshops</h2>
-    <a href="{% url 'add_workshop' %}" class="btn btn-primary mb-4">Add Workshop</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">Manage Workshops</h2>
+        <a href="{% url 'add_workshop' %}" class="btn btn-primary">+ Add Workshop</a>
+    </div>
 
     <div class="row">
         {% for workshop in workshops %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
                 <div class="card-body">
-                    <h5 class="card-title text-primary">{{ workshop.title }}</h5>
-                    <p class="card-text">
-                        <strong>Date:</strong> {{ workshop.date }}<br>
-                        <strong>Time:</strong> {{ workshop.time }}<br>
-                        <strong>Speaker:</strong> {{ workshop.speaker }}<br>
-                        <strong>Location:</strong> {{ workshop.location|title }}<br>
-                        {% if workshop.location == "online" %}
-                            <strong>Meeting Link:</strong> <a href="{{ workshop.meeting_link }}" target="_blank">{{ workshop.meeting_link }}</a><br>
-                        {% else %}
-                            <strong>Address:</strong> {{ workshop.address }}<br>
-                        {% endif %}
-                        <strong>Capacity:</strong> {{ workshop.capacity }}<br>
+                    <h5 class="card-title text-dark">{{ workshop.title }}</h5>
+                    <p class="card-text text-muted mb-1"><strong>Date:</strong> {{ workshop.date }}</p>
+                    <p class="card-text text-muted mb-1"><strong>Time:</strong> {{ workshop.time }}</p>
+                    <p class="card-text text-muted mb-1"><strong>Speaker:</strong> {{ workshop.speaker }}</p>
+                    <p class="card-text text-muted mb-1"><strong>Location:</strong> {{ workshop.location|title }}</p>
+
+                    {% if workshop.location == "online" %}
+                        <p class="card-text text-muted mb-1">
+                            <strong>Meeting Link:</strong> <a href="{{ workshop.meeting_link }}" target="_blank">{{ workshop.meeting_link }}</a>
+                        </p>
+                    {% else %}
+                        <p class="card-text text-muted mb-1">
+                            <strong>Address:</strong> {{ workshop.address }}
+                        </p>
+                    {% endif %}
+
+                    <p class="card-text text-muted mb-1"><strong>Capacity:</strong> {{ workshop.capacity }}</p>
+                    <p class="card-text text-muted">
                         <strong>Status:</strong> 
                         {% if workshop.is_active %}
                             <span class="badge bg-success">Active</span>
@@ -29,14 +37,21 @@
                         {% endif %}
                     </p>
                 </div>
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'edit_workshop' workshop.id %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'delete_workshop' workshop.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="{% url 'edit_workshop' workshop.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                        <a href="{% url 'delete_workshop' workshop.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                    <a href="{% url 'register_workshop' workshop.id %}" class="btn btn-sm btn-success">Register Now</a>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p>No workshops available.</p>
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No workshops available. <a href="{% url 'add_workshop' %}" class="alert-link">Add a new one</a>.
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>

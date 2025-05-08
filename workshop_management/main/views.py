@@ -1,6 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Workshop
+from .forms import WorkshopRegistrationForm
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404
+from .forms import WorkshopRegistrationForm
+from .models import Workshop
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -58,3 +67,28 @@ def delete_workshop(request, id):
     workshop = get_object_or_404(Workshop, id=id)
     workshop.delete()
     return redirect('manage_workshops')
+
+
+
+
+
+
+def register_workshop(request, workshop_id):
+    workshop = get_object_or_404(Workshop, pk=workshop_id)
+
+    if request.method == 'POST':
+        form = WorkshopRegistrationForm(request.POST)
+        if form.is_valid():
+            registration = form.save(commit=False)
+            registration.workshop = workshop
+            registration.save()
+            # Show success message and stay on the same page
+            messages.success(request, 'Thank you for registering! You will receive a confirmation email soon.')
+    else:
+        form = WorkshopRegistrationForm()
+
+    return render(request, 'main/register_workshop.html', {
+        'form': form,
+        'workshop': workshop,
+    })
+
