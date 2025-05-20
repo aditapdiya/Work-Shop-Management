@@ -6,6 +6,7 @@
     <h2 style="color: #003366;">{{ title }}</h2>
     <form method="post" novalidate class="needs-validation">
         {% csrf_token %}
+
         {% if form.non_field_errors %}
             <div class="alert alert-danger">
                 {{ form.non_field_errors }}
@@ -15,64 +16,102 @@
         <div class="mb-3">
             <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
             {{ form.title|add_class:"form-control" }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
             {{ form.description|add_class:"form-control" }}
+            {% for error in form.description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
             {{ form.date|add_class:"form-control" }}
+            {% for error in form.date.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.time.id_for_label }}" class="form-label">{{ form.time.label }}</label>
             {{ form.time|add_class:"form-control" }}
+            {% for error in form.time.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.duration.id_for_label }}" class="form-label">{{ form.duration.label }}</label>
             {{ form.duration|add_class:"form-control" }}
+            {% for error in form.duration.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.speaker.id_for_label }}" class="form-label">{{ form.speaker.label }}</label>
             {{ form.speaker|add_class:"form-control" }}
+            {% for error in form.speaker.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.location.id_for_label }}" class="form-label">{{ form.location.label }}</label>
             {{ form.location|add_class:"form-select" }}
+            {% for error in form.location.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3" id="meeting-link-div">
             <label for="{{ form.meeting_link.id_for_label }}" class="form-label">{{ form.meeting_link.label }}</label>
             {{ form.meeting_link|add_class:"form-control" }}
+            {% for error in form.meeting_link.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3" id="address-div">
             <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }}</label>
             {{ form.address|add_class:"form-control" }}
+            {% for error in form.address.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.capacity.id_for_label }}" class="form-label">{{ form.capacity.label }}</label>
             {{ form.capacity|add_class:"form-control" }}
+            {% for error in form.capacity.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="mb-3">
             <label for="{{ form.registration_deadline.id_for_label }}" class="form-label">{{ form.registration_deadline.label }}</label>
             {{ form.registration_deadline|add_class:"form-control" }}
+            {% for error in form.registration_deadline.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <div class="form-check mb-3">
-            {{ form.is_active }}
+            {{ form.is_active|add_class:"form-check-input" }}
             <label class="form-check-label" for="{{ form.is_active.id_for_label }}">{{ form.is_active.label }}</label>
+            {% for error in form.is_active.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
         <button type="submit" class="btn btn-success">Submit</button>
+        <a href="{% url 'manage_workshops' %}" class="btn btn-secondary ms-2">Cancel</a>
+
     </form>
 </div>
 

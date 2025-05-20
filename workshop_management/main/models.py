@@ -20,7 +20,6 @@ class Workshop(models.Model):
     def __str__(self):
         return self.title
 
-
 class WorkshopRegistration(models.Model):
     PARTICIPANT_TYPE_CHOICES = [
         ('student', 'Student'),
@@ -32,7 +31,6 @@ class WorkshopRegistration(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=15, blank=True)
-
     # Student Fields
     college = models.CharField(max_length=150, blank=True)
     course = models.CharField(max_length=100, blank=True)
@@ -43,13 +41,10 @@ class WorkshopRegistration(models.Model):
         ('4th', '4th Year'),
         ('other', 'Other'),
     ], blank=True)
-
     # Employee Fields
     company_name = models.CharField(max_length=150, blank=True)
     designation = models.CharField(max_length=100, blank=True)
-
     registered_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f"{self.name} - {self.workshop.title}"
 

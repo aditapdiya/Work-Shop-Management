@@ -1,6 +1,6 @@
 from django import forms
-from .models import Workshop , WorkshopRegistration
-
+from .models import Workshop, WorkshopRegistration
+from datetime import date
 
 class WorkshopForm(forms.ModelForm):
     class Meta:
@@ -15,6 +15,29 @@ class WorkshopForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={'type': 'time'}),
             'registration_deadline': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        location = cleaned_data.get('location')
+        meeting_link = cleaned_data.get('meeting_link')
+        address = cleaned_data.get('address')
+        workshop_date = cleaned_data.get('date')
+        registration_deadline = cleaned_data.get('registration_deadline')
+
+        if workshop_date and workshop_date < date.today():
+            self.add_error('date', "Workshop date cannot be in the past.")
+
+        if registration_deadline and workshop_date:
+            if registration_deadline > workshop_date:
+                self.add_error('registration_deadline', "Deadline must be before the workshop date.")
+
+        if location == 'online' and not meeting_link:
+            self.add_error('meeting_link', "Meeting link is required for online workshops.")
+
+        if location == 'offline' and not address:
+            self.add_error('address', "Address is required for offline workshops.")
+
+
 
 class WorkshopRegistrationForm(forms.ModelForm):
     PARTICIPANT_CHOICES = [
