@@ -15,5 +15,9 @@ urlpatterns = [
     path('workshops/edit/<int:id>/', views.edit_workshop, name='edit_workshop'),
     path('workshops/delete/<int:id>/', views.delete_workshop, name='delete_workshop'),
     path('workshops/<int:workshop_id>/register/', views.register_workshop, name='register_workshop'),
+    path('participants/', views.participants_view, name='participants'),
+    path('export-participants/', views.export_participants_excel, name='export_participants_excel'),
+    path('workshops/<int:workshop_id>/feedback/', views.workshop_feedback_view, name='workshop_feedback'),
+
 ]
 

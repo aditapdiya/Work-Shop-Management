@@ -1,3 +1,6 @@
+# main/models.py
+
+
 from django.db import models
 
 class Workshop(models.Model):
@@ -48,3 +51,16 @@ class WorkshopRegistration(models.Model):
     def __str__(self):
         return f"{self.name} - {self.workshop.title}"
 
+class WorkshopFeedback(models.Model):
+    workshop = models.ForeignKey(Workshop, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)  # or ForeignKey if registered user
+    email = models.EmailField()
+    
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    most_helpful_part = models.TextField()
+    suggestions = models.TextField(blank=True, null=True)
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.name} for {self.workshop.title}"

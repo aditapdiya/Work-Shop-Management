@@ -16,6 +16,8 @@
                     <p class="card-text text-muted mb-1"><strong>Time:</strong> {{ workshop.time }}</p>
                     <p class="card-text text-muted mb-1"><strong>Speaker:</strong> {{ workshop.speaker }}</p>
                     <p class="card-text text-muted mb-1"><strong>Location:</strong> {{ workshop.location|title }}</p>
+                    
+
 
                     {% if workshop.location == "online" %}
                         <p class="card-text text-muted mb-1">
@@ -28,6 +30,7 @@
                     {% endif %}
 
                     <p class="card-text text-muted mb-1"><strong>Capacity:</strong> {{ workshop.capacity }}</p>
+                    <p class="card-text text-muted mb-1"><strong>Spots Filled:</strong> {{ workshop.registration_count }}</p>
                     <p class="card-text text-muted">
                         <strong>Status:</strong> 
                         {% if workshop.is_active %}
@@ -43,6 +46,7 @@
                         <a href="{% url 'delete_workshop' workshop.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</a>
                     </div>
                     <a href="{% url 'register_workshop' workshop.id %}" class="btn btn-sm btn-success">Register Now</a>
+                    <a href="{% url 'workshop_feedback' workshop.id %}" class="btn btn-sm btn-info">Feedback</a>
                 </div>
             </div>
         </div>
