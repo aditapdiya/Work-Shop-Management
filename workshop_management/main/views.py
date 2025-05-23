@@ -58,9 +58,15 @@ def register_workshop(request, workshop_id):
         'workshop': workshop,
     })
 
-
+from django.shortcuts import render, get_object_or_404
+from django.core.mail import EmailMessage
+from django.contrib import messages
 from .forms import WorkshopFeedbackForm
-from .models import WorkshopFeedback
+from .models import Workshop, WorkshopFeedback
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+
 
 def workshop_feedback_view(request, workshop_id):
     workshop = get_object_or_404(Workshop, id=workshop_id)
@@ -71,8 +77,31 @@ def workshop_feedback_view(request, workshop_id):
             feedback = form.save(commit=False)
             feedback.workshop = workshop
             feedback.save()
-            messages.success(request, 'Thank you for your feedback!')
-            
+
+            # Generate certificate as PDF
+            buffer = BytesIO()
+            p = canvas.Canvas(buffer, pagesize=letter)
+            p.setFont("Helvetica-Bold", 24)
+            p.drawCentredString(300, 700, "Certificate of Participation")
+            p.setFont("Helvetica", 18)
+            p.drawCentredString(300, 650, f"Presented to {feedback.name}")
+            p.setFont("Helvetica", 14)
+            p.drawCentredString(300, 600, f"For attending the workshop: {workshop.title}")
+            p.showPage()
+            p.save()
+            buffer.seek(0)
+
+            # Send email with certificate
+            email = EmailMessage(
+                subject='Your Workshop Certificate',
+                body=f"Hi {feedback.name},\n\nThank you for attending the workshop. Find your certificate attached.",
+                to=[feedback.email],
+            )
+            email.attach(f'{feedback.name}_certificate.pdf', buffer.read(), 'application/pdf')
+            email.send()
+
+            messages.success(request, 'Thank you for your feedback! Your certificate has been emailed.')
+
     else:
         form = WorkshopFeedbackForm(workshop=workshop)
 
@@ -80,6 +109,7 @@ def workshop_feedback_view(request, workshop_id):
         'form': form,
         'workshop': workshop
     })
+
 
 
 
