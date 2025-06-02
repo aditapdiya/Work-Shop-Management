@@ -24,23 +24,141 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#" style="color: #ffffff;">
-                        <i class="bi bi-bar-chart-line"></i> Reports
+                    <a class="nav-link text-white" href="{% url 'feedback_list' %}">
+                        <i class="bi bi-bar-chart-line"></i> Feedbacks
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" style="color: #ffffff;">
-                        <i class="bi bi-gear"></i> Settings
-                    </a>
+
                 </li>
             </ul>
         </div>
 
         <!-- Main Content -->
-        <div class="col-md-10 offset-md-2 p-4" style="margin-left: 16.66%; background-color: #f1f1f1; border-radius: 8px;">
-            <h2 class="mb-4" style="color: #003366;">Welcome to your Dashboard</h2>
-            <p style="color: #333333;">You are successfully logged in!</p>
+        <!-- Main Content -->
+<div class="col-md-10 offset-md-2 p-4" style="margin-left: 16.66%; background-color: #f1f1f1; border-radius: 8px;">
+    <h2 class="mb-4" style="color: #003366;">Welcome to your Dashboard</h2>
+    
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Workshops</h5>
+                    <p class="card-text display-6">{{ workshop_count }}</p>
+                </div>
+            </div>
         </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Participants</h5>
+                    <p class="card-text display-6">{{ participant_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Total Feedbacks</h5>
+                    <p class="card-text display-6">{{ feedback_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Workshops Table -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white">
+            Recent Workshops
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Speaker</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for workshop in recent_workshops %}
+                    <tr>
+                        <td>{{ workshop.title }}</td>
+                        <td>{{ workshop.date }}</td>
+                        <td>{{ workshop.speaker }}</td>
+                        <td>{{ workshop.location|capfirst }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center">No workshops found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Registrations Table -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-dark text-white">
+            Recent Participants
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Workshop</th>
+                        <th>Registered At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in recent_participants %}
+                    <tr>
+                        <td>{{ reg.name }}</td>
+                        <td>{{ reg.email }}</td>
+                        <td>{{ reg.workshop.title }}</td>
+                        <td>{{ reg.registered_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center">No participants found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Feedback Table -->
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            Recent Feedbacks
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Workshop</th>
+                        <th>Rating</th>
+                        <th>Submitted At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fb in recent_feedbacks %}
+                    <tr>
+                        <td>{{ fb.name }}</td>
+                        <td>{{ fb.workshop.title }}</td>
+                        <td>{{ fb.rating }}/5</td>
+                        <td>{{ fb.submitted_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center">No feedback found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
     </div>
 </div>
 

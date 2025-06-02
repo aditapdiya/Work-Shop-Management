@@ -22,7 +22,7 @@ class Workshop(models.Model):
     is_active = models.BooleanField(default=True)
     def __str__(self):
         return self.title
-
+    
 class WorkshopRegistration(models.Model):
     PARTICIPANT_TYPE_CHOICES = [
         ('student', 'Student'),

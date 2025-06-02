@@ -1,0 +1,41 @@
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Workshop Feedbacks</h2>
+
+    <!-- Workshop Dropdown -->
+    <form method="get" class="form-inline mb-4">
+        <label for="workshop_id" class="mr-2">Select Workshop:</label>
+        <select name="workshop_id" class="form-control mr-2" onchange="this.form.submit()">
+            <option value="">-- Choose a workshop --</option>
+            {% for workshop in workshops %}
+                <option value="{{ workshop.id }}" {% if selected_workshop and workshop.id == selected_workshop.id %}selected{% endif %}>
+                    {{ workshop.title }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if selected_workshop %}
+        <h4>Feedback for "{{ selected_workshop.title }}"</h4>
+        {% if feedbacks %}
+            <ul class="list-group">
+                {% for feedback in feedbacks %}
+                    <li class="list-group-item">
+                        <strong>{{ feedback.name }}</strong> ({{ feedback.email }})<br>
+                        <strong>Rating:</strong> {{ feedback.rating }} / 5<br>
+                        <strong>Most Helpful:</strong> {{ feedback.most_helpful_part }}<br>
+                        <strong>Suggestions:</strong> {{ feedback.suggestions|default:"N/A" }}<br>
+                        <small><em>Submitted at {{ feedback.submitted_at }}</em></small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No feedback found for this workshop.</p>
+        {% endif %}
+    {% else %}
+        <p>Please select a workshop to view feedback.</p>
+    {% endif %}
+</div>
+{% endblock %}

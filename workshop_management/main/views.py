@@ -1,26 +1,34 @@
 # main/views.py
 
-# Standard & Django imports
+# -------------------- Imports -------------------- #
+
+# Django Core Imports
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
+from django.http import HttpResponse
+from django.db.models import Count
 
-# Local imports
-from .models import Workshop
-from .forms import WorkshopForm, WorkshopRegistrationForm
+# Third-party Libraries
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+import openpyxl
 
+# Local App Imports
+from .models import Workshop, WorkshopRegistration, WorkshopFeedback
+from .forms import WorkshopForm, WorkshopRegistrationForm, WorkshopFeedbackForm
 
-# ------------------ Public Views ------------------ #
+# -------------------- Public Views -------------------- #
 
 def home_view(request):
     return render(request, 'main/home.html')
 
 
-# views.py
 def register_workshop(request, workshop_id):
     workshop = get_object_or_404(Workshop, pk=workshop_id)
 
@@ -31,7 +39,6 @@ def register_workshop(request, workshop_id):
             registration.workshop = workshop
             registration.save()
 
-            # Email sending logic (as you already have)
             subject = f"Workshop Registration Confirmation: {workshop.title}"
             message = (
                 f"Dear {registration.name},\n\n"
@@ -49,7 +56,6 @@ def register_workshop(request, workshop_id):
 
             messages.success(request, 'Thank you for registering! A confirmation email has been sent.')
             return redirect('register_workshop', workshop_id=workshop_id)
-
     else:
         form = WorkshopRegistrationForm(workshop=workshop)
 
@@ -57,15 +63,6 @@ def register_workshop(request, workshop_id):
         'form': form,
         'workshop': workshop,
     })
-
-from django.shortcuts import render, get_object_or_404
-from django.core.mail import EmailMessage
-from django.contrib import messages
-from .forms import WorkshopFeedbackForm
-from .models import Workshop, WorkshopFeedback
-from io import BytesIO
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
 
 
 def workshop_feedback_view(request, workshop_id):
@@ -78,7 +75,6 @@ def workshop_feedback_view(request, workshop_id):
             feedback.workshop = workshop
             feedback.save()
 
-            # Generate certificate as PDF
             buffer = BytesIO()
             p = canvas.Canvas(buffer, pagesize=letter)
             p.setFont("Helvetica-Bold", 24)
@@ -91,7 +87,6 @@ def workshop_feedback_view(request, workshop_id):
             p.save()
             buffer.seek(0)
 
-            # Send email with certificate
             email = EmailMessage(
                 subject='Your Workshop Certificate',
                 body=f"Hi {feedback.name},\n\nThank you for attending the workshop. Find your certificate attached.",
@@ -101,7 +96,6 @@ def workshop_feedback_view(request, workshop_id):
             email.send()
 
             messages.success(request, 'Thank you for your feedback! Your certificate has been emailed.')
-
     else:
         form = WorkshopFeedbackForm(workshop=workshop)
 
@@ -110,11 +104,7 @@ def workshop_feedback_view(request, workshop_id):
         'workshop': workshop
     })
 
-
-
-
-
-# ------------------ Authentication Views ------------------ #
+# -------------------- Authentication Views -------------------- #
 
 def login_view(request):
     if request.method == 'POST':
@@ -131,17 +121,21 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'main/dashboard.html')
+    context = {
+        'workshop_count': Workshop.objects.count(),
+        'participant_count': WorkshopRegistration.objects.count(),
+        'feedback_count': WorkshopFeedback.objects.count(),
+        'recent_workshops': Workshop.objects.order_by('-date')[:5],
+        'recent_participants': WorkshopRegistration.objects.order_by('-registered_at')[:5],
+        'recent_feedbacks': WorkshopFeedback.objects.order_by('-submitted_at')[:5],
+    }
+    return render(request, 'main/dashboard.html', context)
 
-
-# ------------------ Workshop Management Views ------------------ #
-
-from django.db.models import Count
+# -------------------- Workshop Management Views -------------------- #
 
 @login_required
 def manage_workshops(request):
     today = timezone.now().date()
-
     workshops = Workshop.objects.annotate(
         registration_count=Count('workshopregistration')
     ).order_by('-date')
@@ -150,7 +144,6 @@ def manage_workshops(request):
         workshop.is_active = workshop.date >= today
 
     return render(request, 'main/manage_workshops.html', {'workshops': workshops})
-
 
 
 @login_required
@@ -162,7 +155,6 @@ def add_workshop(request):
             messages.success(request, 'Workshop added successfully.')
             return redirect('manage_workshops')
         else:
-            print("Form errors:", form.errors)
             messages.error(request, "There were errors in the form. Please fix them.")
     else:
         form = WorkshopForm()
@@ -199,19 +191,16 @@ def delete_workshop(request, id):
     messages.success(request, 'Workshop deleted successfully.')
     return redirect('manage_workshops')
 
-
-from .models import WorkshopRegistration  # already imported
+# -------------------- Participant Views -------------------- #
 
 @login_required
 def participants_view(request):
     workshop_id = request.GET.get('workshop')
-
-    # Get all registrations, filter if a workshop is selected
     registrations = WorkshopRegistration.objects.select_related('workshop')
+
     if workshop_id:
         registrations = registrations.filter(workshop_id=workshop_id)
 
-    # For dropdown list
     workshops = Workshop.objects.all().order_by('-date')
 
     return render(request, 'main/participants.html', {
@@ -220,10 +209,7 @@ def participants_view(request):
         'selected_workshop': int(workshop_id) if workshop_id else None,
     })
 
-import openpyxl
-from django.http import HttpResponse
-from .models import WorkshopRegistration, Workshop
-
+@login_required
 def export_participants_excel(request):
     workshop_id = request.GET.get('workshop')
     registrations = WorkshopRegistration.objects.all()
@@ -231,12 +217,9 @@ def export_participants_excel(request):
     if workshop_id:
         registrations = registrations.filter(workshop__id=workshop_id)
 
-    # Create Excel workbook
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Participants"
-
-    # Headers
     headers = ['Name', 'Email', 'Phone', 'Participant Type', 'Registered At', 'Extra Info']
     ws.append(headers)
 
@@ -258,9 +241,26 @@ def export_participants_excel(request):
         ]
         ws.append(row)
 
-    # Response
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    filename = 'participants.xlsx'
-    response['Content-Disposition'] = f'attachment; filename={filename}'
+    response['Content-Disposition'] = 'attachment; filename=participants.xlsx'
     wb.save(response)
     return response
+
+# -------------------- Feedback List -------------------- #
+@login_required
+def feedback_list(request):
+    workshops = Workshop.objects.all()
+    selected_workshop_id = request.GET.get('workshop_id')
+
+    feedbacks = []
+    selected_workshop = None
+
+    if selected_workshop_id:
+        selected_workshop = Workshop.objects.get(id=selected_workshop_id)
+        feedbacks = WorkshopFeedback.objects.filter(workshop=selected_workshop)
+
+    return render(request, 'main/feedbacks.html', {
+        'workshops': workshops,
+        'selected_workshop': selected_workshop,
+        'feedbacks': feedbacks
+    })
