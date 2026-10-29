@@ -1,43 +1,19 @@
+
 # Python
 __pycache__/
 *.py[cod]
 *.pyo
 
-# Environment
-.env
+# Virtual environment
 venv/
+.venv/
 env/
-*.env
 
 # Django
-db.sqlite3
 *.log
+db.sqlite3
 media/
 staticfiles/
 
-# VSCode settings
-.vscode/
-
-# macOS
-.DS_Store
-
-# Windows
-Thumbs.db
-
-# Migrations
-*/migrations/__pycache__/
-*/migrations/*.pyc
-*/migrations/*.pyo
-
-# Coverage and testing
-htmlcov/
-.coverage
-coverage.xml
-*.cover
-
-# Git
-.git/
-*.swp
-
-# PyCharm
-.idea/
+# Environment variables and secrets
+.env

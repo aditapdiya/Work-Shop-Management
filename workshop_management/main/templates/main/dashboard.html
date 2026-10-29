@@ -1,42 +1,38 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<!-- Main Layout with Sidebar -->
-<div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar (Fixed) -->
-        <div class="col-md-2 bg-dark text-white p-4" style="height: 100vh; position: fixed; top: 0; left: 0; background-color: #003366;">
-            <h4 class="text-center mb-4" style="color: #00b0f0;">Dashboard</h4>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#" style="color: #ffffff;">
-                        <i class="bi bi-house-door"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'manage_workshops' %}">
-                        <i class="bi bi-briefcase"></i> Manage Workshops
-                    </a>                    
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'participants' %}" style="color: #ffffff;">
-                        <i class="bi bi-person-check"></i> Participants
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'feedback_list' %}">
-                        <i class="bi bi-bar-chart-line"></i> Feedbacks
-                    </a>
 
-                </li>
-            </ul>
-        </div>
+<!-- Sidebar (matches header & footer gradient) -->
+<aside class="sidebar">
+    <div class="sidebar-title">Menu</div>
+    <ul class="sidebar-nav">
+        <li>
+            <a href="/dashboard/" class="{% if request.path == '/dashboard/' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'manage_workshops' %}" class="{% if request.resolver_match.url_name == 'manage_workshops' %}active{% endif %}">
+                <i class="bi bi-briefcase"></i><span>Manage Workshops</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'participants' %}" class="{% if request.resolver_match.url_name == 'participants' %}active{% endif %}">
+                <i class="bi bi-people"></i><span>Participants</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'feedback_list' %}" class="{% if request.resolver_match.url_name == 'feedback_list' %}active{% endif %}">
+                <i class="bi bi-chat-square-text"></i><span>Feedbacks</span>
+            </a>
+        </li>
+    </ul>
+</aside>
 
-        <!-- Main Content -->
-        <!-- Main Content -->
-<div class="col-md-10 offset-md-2 p-4" style="margin-left: 16.66%; background-color: #f1f1f1; border-radius: 8px;">
+<!-- Main Content -->
+<div class="main-content">
     <h2 class="mb-4" style="color: #003366;">Welcome to your Dashboard</h2>
-    
+
     <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-4">
@@ -159,30 +155,92 @@
     </div>
 </div>
 
-    </div>
-</div>
-
-<!-- Inline CSS for hover effects and active links -->
+<!-- Inline CSS -->
 <style>
-    .nav-link {
-        color: #ffffff; /* Default color for links */
+    :root {
+        --header-h: 82px;   /* adjust to your header height */
+        --footer-h: 66px;   /* adjust to your footer height */
+        --sidebar-w: 250px;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+        position: fixed;
+        top: var(--header-h);
+        bottom: var(--footer-h);
+        left: 0;
+        width: var(--sidebar-w);
+        padding: 24px 14px;
+        background: linear-gradient(180deg, #030f27, #005f99);
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.25);
+        overflow-y: auto;
+        z-index: 100;
+    }
+
+    .sidebar-title {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 0 14px 12px;
+    }
+
+    .sidebar-nav {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar-nav li {
+        margin-bottom: 6px;
+    }
+
+    .sidebar-nav a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        color: #ffffff;
         font-weight: 500;
-        transition: background-color 0.3s ease; /* Smooth transition for hover */
-    }
-    .nav-link:hover {
-        background-color: #00b0f0; /* Light blue for hover effect */
-        color: #003366; /* Dark blue for text when hovering */
-    }
-    .nav-item.active .nav-link {
-        background-color: #00b0f0; /* Light blue for active link */
-        color: #003366; /* Dark blue for text */
+        text-decoration: none;
+        border-radius: 10px;
+        border-left: 4px solid transparent;
+        transition: background 0.25s ease, transform 0.25s ease;
     }
 
-    .container-fluid {
-        padding-left: 0;
-        padding-right: 0;
+    .sidebar-nav a i {
+        font-size: 1.15rem;
+        color: #00b0f0;
     }
 
+    .sidebar-nav a:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateX(4px);
+    }
+
+    .sidebar-nav a.active {
+        background: rgba(0, 176, 240, 0.18);
+        border-left-color: #00b0f0;
+        font-weight: 600;
+    }
+
+    /* ---------- Main content ---------- */
+    .main-content {
+        margin-left: var(--sidebar-w);
+        padding: 24px;
+        padding-bottom: calc(var(--footer-h) + 24px); /* keeps content clear of the fixed footer */
+        background-color: #f1f1f1;
+        min-height: calc(100vh - var(--header-h));
+    }
+
+    .main-content h2 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    /* ---------- Header / footer (unchanged) ---------- */
     .navbar-custom {
         background: linear-gradient(90deg, #030f27, #005f99);
     }
@@ -204,31 +262,7 @@
         position: fixed;
         bottom: 0;
         width: 100%;
-    }
-
-    /* Enhanced button styles for sidebar */
-    .nav-link i {
-        margin-right: 10px; /* Space between icon and text */
-    }
-
-    /* Main content styling */
-    .col-md-10 {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
-        border-radius: 8px;
-    }
-
-    h2 {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 30px;
-    }
-
-    .nav-item {
-        border-bottom: 1px solid #ddd; /* Subtle border between items */
-    }
-
-    .nav-item:last-child {
-        border-bottom: none; /* Remove border from last item */
+        z-index: 200;
     }
 </style>
 
